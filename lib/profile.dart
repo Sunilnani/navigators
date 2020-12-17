@@ -2,16 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
+  final String profession;
   final String name;
-  Profile(this.name);
+  Profile(this.name,this.profession);
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<Profile> {
-  List selectedIndex =[];
+  int activeDate=2;
+  double amount=10.3;
+  List <double> amounts=[10.3,20.4,30.5,40.6,50.1];
   List<String> day=["Sun","Mon","Tue","Wed","Thu"];
-  List<String> date=["2","3","4","5","6"];
+  List<int> date=[2,3,4,5,6];
   List<Color> colors=[Colors.white,Colors.white,Color(0xFF94d3da),Colors.white,Colors.white];
   List <String> count=["648","6","1084","5"];
   List<String> operations=["Patients","Years Exp","Surgery","Rating"];
@@ -76,28 +79,25 @@ class _MyAppState extends State<Profile> {
                             ),
                             SizedBox(height: 5,),
                             Container(
-                              height: 79,
+                              height: 90,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
                                 itemCount: colors.length,
                                 itemBuilder: (context,index){
-                                  final isSelected=selectedIndex.contains(index);
-                                  return GestureDetector(
-                                    onTap: (){
-                                      setState(() {
-                                        if(isSelected){
-                                          selectedIndex.remove(index);
-                                        }
-                                        else{
-                                          selectedIndex.add(index);
-                                        }
-                                      });
-                                    },
+
+                                  return InkWell(
                                     child: Weekdays(
+                                      onTap: (){
+                                        setState(() {
+                                          activeDate = date[index];
+                                          amount=amounts[index];
+                                        });
+                                      },
                                       day: day[index],
                                       date: date[index],
-                                      color: isSelected ? Colors.red:Colors.blueGrey,
+                                      activeDate: activeDate,
+                                      amount: amount,
                                     ),
                                   );
                                 },
@@ -147,7 +147,7 @@ class _MyAppState extends State<Profile> {
                         child:Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text("Fee: 10.50",style: TextStyle(color: Color(0xFFe2f3f7),fontWeight: FontWeight.w700,fontSize: 15),),
+                            Text("$amount",style: TextStyle(color: Color(0xFFe2f3f7),fontWeight: FontWeight.w700,fontSize: 15),),
                             Container(
                               alignment: Alignment.center,
                               height: 30,
@@ -190,7 +190,7 @@ class _MyAppState extends State<Profile> {
                                 child: Text(widget.name,style: TextStyle(color: Color(0xFFe9eff4),fontWeight: FontWeight.w800,fontSize: 20),),
                               ),
                               SizedBox(height: 3,),
-                              Text("Senior Cardiologist and Surgeon",style: TextStyle(color: Color(0xFFe9eff4),fontWeight: FontWeight.w300,fontSize: 12),),
+                              Text(widget.profession,style: TextStyle(color: Color(0xFFe9eff4),fontWeight: FontWeight.w300,fontSize: 12),),
                               SizedBox(height: 3,),
                               Text("United State medical college & hospital",style: TextStyle(color: Color(0xFFe9eff4),fontWeight: FontWeight.w300,fontSize: 15),),
 
@@ -237,8 +237,8 @@ class Patients extends StatelessWidget {
               padding: const EdgeInsets.only(top:10.0),
               child: Column(
                 children: [
-                  Text(count,style: TextStyle(color: Color(0xFFdce7f3),fontWeight: FontWeight.w700),),
-                  Text(operations,style: TextStyle(color: Color(0xFFdce7f3)),)
+                  Text(count,style: TextStyle(color:Colors.white,fontWeight: FontWeight.w700),),
+                  Text(operations,style: TextStyle(color:Colors.white),)
                 ],
               ),
             ),
@@ -254,37 +254,51 @@ class Weekdays extends StatelessWidget {
     this.day,
     this.date,
     this.color,
+    this.activeDate,
+    this.onTap,
+    this.amount,
+    this.amounts,
     Key key,
   }) : super(key: key);
   final String day;
-  final String date;
+  final int date;
   final Color color;
+  final int activeDate;
+  final Function onTap;
+  final double amount;
+  final double amounts;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            height:75,
-            width: 43,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: this.color
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top:15.0),
-              child: Column(
-                children: [
-                  Text(day,style: TextStyle(color: Color(0xFF878a98)),),
-                  Text(date,style: TextStyle(color: Color(0xFF878a98)),)
-                ],
+    return InkWell(
+      onTap: (){
+        onTap?.call();
+      },
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+              height:78,
+              width: 43,
+              decoration:  activeDate != date ? BoxDecoration():BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color:Color(0xFF94d3da)
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top:15.0),
+                child: Column(
+                  children: [
+                    Text(day,style: TextStyle(color: Color(0xFF878a98)),),
+                    SizedBox(height: 2,),
+                    Text("$date",style: TextStyle(color: Color(0xFF878a98)),)
+                  ],
+                ),
               ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

@@ -132,7 +132,7 @@ class _MyAppState extends State<MyApp> {
                           onTap: (){
                             Navigator.push(context,
                             MaterialPageRoute(builder: (context)=>Profile(
-                              name[index]
+                              name[index],profession[index]
                             )));
                           },
                           child: DoctorsAppointment(
@@ -231,7 +231,7 @@ class DoctorsAppointment extends StatelessWidget {
                               onPressed: (){
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => Profile(title)
+                                    builder: (context) => Profile(title,subtitle)
                                   )
                                 );
                               },
